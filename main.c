@@ -25,9 +25,9 @@ int main(int argc, char*argv[]) {
     }
     for (int i = 0; i < 2; i++) {
         p_array[i] = 0;
-        printf("p_array[%d] = %d", i , p_array[i]);
+        printf("p_array[%d] = %d\n", i , p_array[i]);
     }
-    free(p_array);
+    my_free(p_array);
     return 0;
 }
 
@@ -36,33 +36,55 @@ void *my_malloc(size_t bytes_requested) {
     // actual byte amount
     size_t actual_memory_size = bytes_requested + sizeof(header_t);
 
-    // loop through free list and find first available
+    // loop through free list and find first available node
     node_t *p_node = head;
-
-
+    node_t *prev_node = NULL;
     while (p_node != NULL) {
         // first fit algorithm
         if (p_node->size >= actual_memory_size) {
+            int difference = (int) (p_node->size - actual_memory_size);
+
+            node_t *next_node = p_node->next;
 
             // create header for new memory block being allocated
-            header_t *new_block = (header_t * ) p_node;
+            header_t *new_block = (header_t *) p_node;
             new_block->size = (int) bytes_requested;
             new_block->magic = MAGIC_NUMBER;
             assert(new_block->magic == MAGIC_NUMBER);
 
-            // move head down
-            uint8_t *p_temp = (uint8_t *) head + actual_memory_size;
-            head = (node_t *) p_temp;
-            head->size = HEAP_SIZE - (bytes_requested + sizeof(header_t));
-            head->next = NULL;
-            p_node = NULL;
+            if (difference == 0) {
+                if (prev_node == NULL) {
+                    head = next_node;
+                }
+                else {
+                    prev_node->next = next_node;
+                }
 
-            uint8_t *p_temp_new_block = (uint8_t *) new_block + sizeof(header_t);
-            void *pointer = (void *) p_temp_new_block;
-            return pointer;
+            }
+            else {
+                // create space for allocated block and move node down after the block
+                uint8_t *p_temp = (uint8_t *) p_node + actual_memory_size;
+                node_t *new_node = (node_t *) p_temp;
+                new_node->size = (int) (prev_node->size - actual_memory_size);
+
+                // reconfiguring free list
+                if (prev_node == NULL) {
+                    head = new_node;
+                }
+                else {
+                    prev_node->next = new_node;
+                }
+                new_node->next = p_node->next;
+
+                // returning pointer back to user
+                uint8_t *p_temp_new_block = (uint8_t *) new_block + sizeof(header_t);
+                void *pointer = (void *) p_temp_new_block;
+                return pointer;
+            }
         }
+        prev_node = p_node;
         // move pointer along
-        p_node = head->next;
+        p_node = p_node->next;
     }
     return NULL;
 }
@@ -72,9 +94,9 @@ void my_free(void *ptr) {
     header_t *p_header = (header_t *) ptr - 1;
     assert(p_header->magic == MAGIC_NUMBER);
 
-    // need to coalesce back into the free list
+    // need to add back into the free list
     node_t *p_node = (node_t *) p_header;
-    head->next = (node_t *) p_header;
     p_node->size = p_header->size;
-    p_node->next = NULL;
+    p_node->next = head;
+    head = p_node;
 }
