@@ -6,7 +6,7 @@
 
 void *my_malloc(size_t);
 void my_free(void *);
-void coalesce_list(node_t *);
+void coalesce_list();
 
 #define MAGIC_NUMBER 12345
 int HEAP_SIZE = 4096;
@@ -91,7 +91,12 @@ void *my_malloc(size_t bytes_requested) {
         // move pointer along
         p_node = p_node->next;
     }
-    return NULL;
+    // ran out of memory, increase size of heap
+    node_t *new_mem = mmap(NULL, HEAP_SIZE, PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
+    new_mem->size = 4096 - sizeof(node_t);
+    new_mem->next = head;
+    head = new_mem;
+    return my_malloc(bytes_requested);
 }
 
 void my_free(void *ptr) {
@@ -101,15 +106,15 @@ void my_free(void *ptr) {
 
     // need to add back into the free list
     node_t *p_node = (node_t *) p_header;
-    p_node->size = p_header->size;
+    p_node->size = p_header->size + sizeof(header_t);
     p_node->next = head;
     head = p_node;
 
-    coalesce_list(head);
+    coalesce_list();
 }
 
 
-void coalesce_list(node_t *head) {
+void coalesce_list() {
     node_t *curr_node = head;
     node_t *prev_node = NULL;
     while (curr_node != NULL) {
@@ -128,9 +133,10 @@ void coalesce_list(node_t *head) {
             else {
                 prev_node->next = new_node;
             }
+            curr_node = new_node;
+            continue;
         }
         prev_node = curr_node;
         curr_node = curr_node->next;
     }
-
 }
