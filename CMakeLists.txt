@@ -4,4 +4,7 @@ project(my_malloc C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(my_malloc main.c
-        helper.h)
+        data_structures.h
+        tests/tests.h
+        tests/tests.c
+        malloc.h)

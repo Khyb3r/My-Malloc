@@ -11,7 +11,7 @@ typedef struct _node_t {
 typedef struct {
     int size;
     int magic;
-} header_t ;
+} header_t;
 
 
 #endif //HELPER_H

@@ -55,6 +55,12 @@ build CMakeFiles/my_malloc.dir/main.c.o: C_COMPILER__my_malloc_unscanned_Debug /
   OBJECT_DIR = CMakeFiles/my_malloc.dir
   OBJECT_FILE_DIR = CMakeFiles/my_malloc.dir
 
+build CMakeFiles/my_malloc.dir/tests/tests.c.o: C_COMPILER__my_malloc_unscanned_Debug /Users/khyber/Documents/ostep-projects/vm-allocator/my-malloc/tests/tests.c || cmake_object_order_depends_target_my_malloc
+  DEP_FILE = CMakeFiles/my_malloc.dir/tests/tests.c.o.d
+  FLAGS = -g -std=gnu11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/my_malloc.dir
+  OBJECT_FILE_DIR = CMakeFiles/my_malloc.dir/tests
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target my_malloc
@@ -63,7 +69,7 @@ build CMakeFiles/my_malloc.dir/main.c.o: C_COMPILER__my_malloc_unscanned_Debug /
 #############################################
 # Link the executable my_malloc
 
-build my_malloc: C_EXECUTABLE_LINKER__my_malloc_Debug CMakeFiles/my_malloc.dir/main.c.o
+build my_malloc: C_EXECUTABLE_LINKER__my_malloc_Debug CMakeFiles/my_malloc.dir/main.c.o CMakeFiles/my_malloc.dir/tests/tests.c.o
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk
   OBJECT_DIR = CMakeFiles/my_malloc.dir
   POST_BUILD = :

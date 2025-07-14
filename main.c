@@ -2,11 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/mman.h>
-#include "helper.h"
-
-void *my_malloc(size_t);
-void my_free(void *);
-void coalesce_list();
+#include "data_structures.h"
+#include "tests/tests.h"
+#include "malloc.h"
 
 #define MAGIC_NUMBER 12345
 int HEAP_SIZE = 4096;
@@ -18,6 +16,7 @@ int main(int argc, char*argv[]) {
     head->next = NULL;
 
     // test
+    /*
     int *p_array = my_malloc(sizeof(int) * 2);
     if (p_array == NULL) {
         fprintf(stderr, "Malloc error\n");
@@ -34,6 +33,17 @@ int main(int argc, char*argv[]) {
         printf("Word at words[%d]: %s\n", i, words[i]);
     }
     my_free(words);
+    */
+
+    // Actual mock unit testing
+    //run_all_tests();
+
+    int *x = my_malloc(sizeof(int));
+    if (x == NULL) return false;
+    *x = 42;
+    bool success = (*x == 42);
+    my_free(x);
+    printf("Passed test 1\n");
     return 0;
 }
 
@@ -80,7 +90,7 @@ void *my_malloc(size_t bytes_requested) {
                 else {
                     prev_node->next = new_node;
                 }
-                new_node->next = p_node->next;
+                new_node->next = next_node;
             }
             // returning pointer back to user
             uint8_t *p_temp_new_block = (uint8_t *) new_block + sizeof(header_t);
@@ -103,10 +113,11 @@ void my_free(void *ptr) {
     // free memory
     header_t *p_header = (header_t *) ptr - 1;
     assert(p_header->magic == MAGIC_NUMBER);
+    int header_size = p_header->size;
 
     // need to add back into the free list
     node_t *p_node = (node_t *) p_header;
-    p_node->size = p_header->size + sizeof(header_t);
+    p_node->size = header_size;
     p_node->next = head;
     head = p_node;
 
@@ -118,7 +129,7 @@ void coalesce_list() {
     node_t *curr_node = head;
     node_t *prev_node = NULL;
     while (curr_node != NULL) {
-        uint8_t *curr_node_end = (uint8_t *)curr_node + sizeof(node_t) + curr_node->size;
+        uint8_t *curr_node_end = (uint8_t *) curr_node + curr_node->size + sizeof(node_t);
         node_t *next_node_start = curr_node->next;
         if (curr_node_end == (uint8_t *)next_node_start) {
             int curr_node_size = curr_node->size;
