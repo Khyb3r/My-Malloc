@@ -36,7 +36,7 @@ int main(int argc, char*argv[]) {
     */
 
     // Actual mock unit testing
-    //run_all_tests();
+    run_all_tests();
 
     int *x = my_malloc(sizeof(int));
     if (x == NULL) return false;
@@ -102,8 +102,9 @@ void *my_malloc(size_t bytes_requested) {
         p_node = p_node->next;
     }
     // ran out of memory, increase size of heap
-    node_t *new_mem = mmap(NULL, HEAP_SIZE, PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
-    new_mem->size = 4096 - sizeof(node_t);
+    // increased to 8192 bytes as test 4 requested more memory than I was requesting from mmap sys call
+    node_t *new_mem = mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, -1, 0);
+    new_mem->size = 8192 - sizeof(node_t);
     new_mem->next = head;
     head = new_mem;
     return my_malloc(bytes_requested);

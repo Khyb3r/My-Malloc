@@ -11,6 +11,7 @@ typedef struct _node_t {
 typedef struct {
     int size;
     int magic;
+    uintptr_t padding; // 8 byte padding to align header as same size as node for easier work around between them
 } header_t;
 
 
