@@ -1,1 +1,7 @@
 .main
+/tests
+.idea/
+a
+cmake-build-debug/
+*.out
+*.o

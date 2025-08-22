@@ -15,35 +15,7 @@ int main(int argc, char*argv[]) {
     head->size = 4096 - sizeof(node_t);
     head->next = NULL;
 
-    // test
-    /*
-    int *p_array = my_malloc(sizeof(int) * 2);
-    if (p_array == NULL) {
-        fprintf(stderr, "Malloc error\n");
-        exit(1);
-    }
-    for (int i = 0; i < 2; i++) {
-        p_array[i] = 0;
-        printf("p_array[%d] = %d\n", i , p_array[i]);
-    }
-    my_free(p_array);
-    char **words = my_malloc(sizeof(char *) * 3);
-    for (int i = 0; i < 3; i++) {
-        words[i] = "Hello";
-        printf("Word at words[%d]: %s\n", i, words[i]);
-    }
-    my_free(words);
-    */
-
-    // Actual mock unit testing
     run_all_tests();
-
-    int *x = my_malloc(sizeof(int));
-    if (x == NULL) return false;
-    *x = 42;
-    bool success = (*x == 42);
-    my_free(x);
-    printf("Passed test 1\n");
     return 0;
 }
 

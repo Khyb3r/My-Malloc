@@ -1,3 +1,0 @@
-/Users/khyber/Documents/ostep-projects/vm-allocator/my-malloc/cmake-build-debug/CMakeFiles/my_malloc.dir
-/Users/khyber/Documents/ostep-projects/vm-allocator/my-malloc/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/khyber/Documents/ostep-projects/vm-allocator/my-malloc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
